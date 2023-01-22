@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,4 +20,17 @@ Route::get('/', function () {
 
 Route::get('/db', function () {
     return view('mahasiswa');
+});
+
+Route::get('/actuator/health/liveness', function () {
+    try {
+        DB::connection()->getPdo();
+        return response('ok');
+    } catch (\Exception $e) {
+        return response("failed: \n". $e, 500);
+    }
+});
+
+Route::get('/actuator/health/readiness', function () {
+    return response('ok');
 });

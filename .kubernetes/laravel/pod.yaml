@@ -8,7 +8,7 @@ metadata:
 spec:
   initContainers:
     - name: artisan-migrate
-      image: 192.168.88.50:8086/udemy/laravel-monolith-apps:v2
+      image: 192.168.88.50:8086/udemy/laravel-monolith-apps:v3
       command: [".docker/php-artisan-migrate"]
       ports:
         - containerPort: 80
@@ -36,9 +36,10 @@ spec:
               name: mysql-secret
   containers:
     - name: laravel
-      image: 192.168.88.50:8086/udemy/laravel-monolith-apps:v2
+      image: 192.168.88.50:8086/udemy/laravel-monolith-apps:v3
       ports:
         - containerPort: 80
+          name: http
       env:
         - name: APP_URL
           value: ""
@@ -68,5 +69,20 @@ spec:
         limits:
           cpu: 1500m
           memory: 1Gi
+      startupProbe:
+        httpGet:
+          port: http
+          path: /actuator/health/readiness
+          scheme: HTTP
+        initialDelaySeconds: 2
+        timeoutSeconds: 1
+      livenessProbe:
+        httpGet:
+          port: http
+          path: /actuator/health/liveness
+          scheme: HTTP
+        timeoutSeconds: 1
+        periodSeconds: 3
+        failureThreshold: 2
       imagePullPolicy: Always
   restartPolicy: Always

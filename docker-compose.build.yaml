@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   laravel:
-    image: dimmaryanto93/kubernetes-laravel-monolith-apps:v2
+    image: dimmaryanto93/kubernetes-laravel-monolith-apps:v3
     build:
       dockerfile: Dockerfile
       context: ./
